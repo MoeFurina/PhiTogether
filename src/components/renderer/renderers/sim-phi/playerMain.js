@@ -522,9 +522,7 @@ simphiPlayer.emitter.addEventListener(
             i.classList.toggle("disabled", this.ne("stop"));
         if (this.eq("play"))
             simphiPlayer.app.playMode =
-                (shared.game.ptmain.gameConfig.autoplay &&
-                    shared.game.ptmain.gameConfig.account &&
-                    shared.game.ptmain.gameConfig.account.userBasicInfo.isPTDeveloper) ||
+                shared.game.ptmain.gameConfig.autoplay  ||
                 shared.game.ptmain.playConfig.mode === "preview"
                     ? 1
                     : 0;

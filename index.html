@@ -947,7 +947,7 @@
                                 </div>
                                 <br />
                                 <div
-                                    v-if="gameConfig.account.userBasicInfo && gameConfig.account.userBasicInfo.isPTDeveloper"
+                                    v-if="true"
                                     style="display: block"
                                 >
                                     <span
@@ -972,13 +972,13 @@
                                         id="competeMode"
                                         v-model="gameConfig.competeMode"
                                     />
-                                    <label for="competeMode">CM</label>
+                                    <label for="competeMode">竞赛模式</label>
                                     <input
                                         type="checkbox"
                                         id="allowNonFullscreen"
                                         v-model="gameConfig.allowNonFullscreen"
                                     />
-                                    <label for="allowNonFullscreen">AnF</label>
+                                    <label for="allowNonFullscreen">允许非全屏模式</label>
                                     <br />
                                     <input
                                         id="customChartServer"
