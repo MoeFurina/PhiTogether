@@ -260,7 +260,7 @@ const ptAppInstance = createApp({
                 autoDelay: true,
                 usekwlevelOverbgm: false,
                 resourcesType: "together-pack-1",
-                customChartServer: "ptc.realtvop.top",
+                customChartServer: "charts.phitogether.focalors.ltd",
                 prprRespackID: "",
                 enableFilter: false,
                 enableLife: true,

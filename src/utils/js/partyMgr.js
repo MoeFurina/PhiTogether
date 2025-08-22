@@ -53,7 +53,7 @@ export const partyMgr = {
             },
             songList: {
                 rt: {
-                    chart: "https://ptc.realtvop.top/song/r55828450/55828450.json",
+                    chart: "https://charts.phitogether.focalors.ltd/song/r55828450/55828450.json",
                     unlockVideo: null,
                     charter: "o1b",
                     difficulty: "?",
@@ -66,7 +66,7 @@ export const partyMgr = {
                     userScore: [["NEW", "gray", "15px", 0.6], "0000000", "0.00%"],
                 },
                 2024: {
-                    chart: "https://ptc.realtvop.top/song/r55828450/55828450.json",
+                    chart: "https://charts.phitogether.focalors.ltd/song/r55828450/55828450.json",
                     unlockVideo: null,
                     charter: "o1b",
                     difficulty: "?",

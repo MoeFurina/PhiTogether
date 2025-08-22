@@ -99,7 +99,7 @@ export const defaultGameConfig = {
     customResourceLink: "",
     autoplay: false,
     competeMode: false,
-    customChartServer: "ptc.realtvop.top",
+    customChartServer: "charts.phitogether.focalors.ltd",
     fullScreenJudge: false,
     stopWhenNoLife: false,
     useSeparateOffscreenCanvas: false,
