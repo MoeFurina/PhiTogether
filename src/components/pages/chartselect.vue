@@ -63,7 +63,7 @@ export default {
             "res.phizone.cn";
         },
         customChartServer() {
-            if (shared.game.ptmain.gameConfig.customChartServer === "chart..phitogether.focalors.ltd")
+            if (shared.game.ptmain.gameConfig.customChartServer === "chart.phitogether.focalors.ltd")
                 return "charts.phitogether.focalors.ltd";
             return shared.game.ptmain.gameConfig.customChartServer;
         },
@@ -385,7 +385,7 @@ export default {
                     await fetch(
                         url.replace(
                             /https?:\/\/api.phi.zone/,
-                            "https://proxy..phitogether.focalors.ltd/phizoneApi"
+                            "https://proxy.phitogether.focalors.ltd/phizoneApi"
                         )
                     )
                 ).json();

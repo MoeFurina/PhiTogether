@@ -4,7 +4,7 @@
 
 [iOS 应用](https://testflight.apple.com/join/PvFpBSft)
 
-[服务状态](https://status.phitogether.fun)
+[服务状态](https://status.phitogether.focalors.ltd)
 
 将多人游戏与Phigros玩法结合起来！一个基于Phigros玩法的非盈利性开源社区游戏。集成PhiZone。
 

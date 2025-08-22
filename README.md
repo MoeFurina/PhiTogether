@@ -4,7 +4,7 @@
 
 [iOS App](https://testflight.apple.com/join/PvFpBSft)
 
-[Status Page](https://status.phitogether.fun)
+[Status Page](https://status.phitogether.focalors.ltd)
 
 Bringing multiplayer to Phigros gameplay! An open-source, non-commercial & community-based rhythm game with PhiZone intergrated.
 

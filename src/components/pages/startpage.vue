@@ -24,7 +24,7 @@ export default {
         isPTFun() {
             return (
                 [80, 443, 1443, "1443"].includes(location.port) ||
-                location.host.endsWith(".phitogether.focalors.ltd")
+                location.host.endsWith("phitogether.focalors.ltd")
             );
         },
         isPTApp() {
@@ -330,7 +330,7 @@ export default {
                 <b>{{ $t("startPage.about") }}</b>
             </a>
             &nbsp;|&nbsp;
-            <a href="https://status..phitogether.focalors.ltd" target="_blank">
+            <a href="https://status.phitogether.focalors.ltd" target="_blank">
                 <b>{{ $t("startPage.serviceStatus") }}</b>
             </a>
             &nbsp;|&nbsp;
