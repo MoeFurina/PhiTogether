@@ -120,7 +120,7 @@ self.addEventListener("fetch", async function (e) {
       return;
     } else if (
       urlParsed.host.endsWith("ptc.realtvop.eu.org") ||
-      urlParsed.host === "chart.phitogether.fun" ||
+      urlParsed.host === "chart..phitogether.focalors.ltd" ||
       urlParsed.host.endsWith("charts.phitogether.focalors.ltd")
     ) {
       // PhiTogether Community

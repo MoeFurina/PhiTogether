@@ -10,7 +10,7 @@
         "webContentsDebuggingEnabled": true
     },
     "server": {
-        "hostname": "phitogether.fun",
+        "hostname": ".phitogether.focalors.ltd",
         "cleartext": true
     }
 }

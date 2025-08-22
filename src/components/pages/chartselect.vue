@@ -63,7 +63,7 @@ export default {
             "res.phizone.cn";
         },
         customChartServer() {
-            if (shared.game.ptmain.gameConfig.customChartServer === "chart.phitogether.fun")
+            if (shared.game.ptmain.gameConfig.customChartServer === "chart..phitogether.focalors.ltd")
                 return "charts.phitogether.focalors.ltd";
             return shared.game.ptmain.gameConfig.customChartServer;
         },
@@ -385,7 +385,7 @@ export default {
                     await fetch(
                         url.replace(
                             /https?:\/\/api.phi.zone/,
-                            "https://proxy.phitogether.fun/phizoneApi"
+                            "https://proxy..phitogether.focalors.ltd/phizoneApi"
                         )
                     )
                 ).json();
@@ -819,9 +819,9 @@ export default {
                             }">
                             <div style="flex: 3; overflow: hidden; aspect-ratio: 3 / 2">
                                 <img :src="loadingImages.get(chart.illustration)
-                                        ? null
-                                        : imageCache.get(chart.illustration) ||
-                                        chart.illustration
+                                    ? null
+                                    : imageCache.get(chart.illustration) ||
+                                    chart.illustration
                                     " style="object-fit: cover; height: 100%; width: 100%" />
                                 <div class="songCardCover" v-show="!selectedSongData"
                                     style="font-size: 1.25vw; color: white; line-height: 1.2em" :style="{
@@ -885,9 +885,9 @@ export default {
                 <div v-if="selectedSongData" style="margin-top: 2.5vh; overflow-y: scroll; height: calc(100% - 2.5vh)">
                     <div class="scoreSongCard" style="width: 90%; height: 30vh">
                         <img :src="loadingImages.get(selectedSongData.illustration)
-                                ? null
-                                : imageCache.get(selectedSongData.illustration) ||
-                                selectedSongData.illustration
+                            ? null
+                            : imageCache.get(selectedSongData.illustration) ||
+                            selectedSongData.illustration
                             " style="object-fit: cover" />
                     </div>
                     <div style="
