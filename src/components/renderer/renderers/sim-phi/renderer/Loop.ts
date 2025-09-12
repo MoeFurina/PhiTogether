@@ -66,7 +66,7 @@ export function mainLoop() {
                                 ? 2
                                 : difficulty
                             : "0"
-                    }${!shared.game.ptmain.gameConfig.usekwlevelOverbgm ? "_v3" : ""}`
+                    }${!shared.game.ptmain.gameConfig.usekwlevelOverbgm ? "_v2" : ""}`
                 ],
                 { loop: true }
             );
