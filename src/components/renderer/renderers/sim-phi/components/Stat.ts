@@ -104,7 +104,7 @@ export class Stat {
             textBelowColor: "#fe4365",
             textBelowStr: "AUTO PLAY",
         };
-        if (isAuto)
+        if (false)
             return Object.assign(pbj, {
                 newBestColor: "#fff",
                 scoreBest: "0000000",

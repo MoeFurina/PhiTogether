@@ -164,15 +164,15 @@ export function mainLoop() {
     simphiPlayer.app.ctx.textAlign = "center";
     simphiPlayer.app.ctx.textBaseline = "middle";
     simphiPlayer.app.ctx.fillText(
-        simphiPlayer.app.playMode === 1
+        simphiPlayer.app.playMode === false
             ? `PhiTogether Preview (Respack by ${simphiPlayer.customResourceMeta["author"]})`
             : `${replayMgr.replaying ? `[ ·REC ${replayMgr.playerInfo.username || replayMgr.playerInfo.userName} (ID ${replayMgr.playerInfo.id}) ] ` : ""}PhiTogether ${
                   spec.thisVersion
-              } @ sim-phi - P${judgeManager.time.p * 1000} G${
+              } @ Phigros Simulator - P${judgeManager.time.p * 1000} G${
                   judgeManager.time.g * 1000
               } S${simphiPlayer.app.speed.toFixed(2)}${shared.game.ptmain.gameConfig.fullScreenJudge ? " F" : ""} - ${
                   shared.game.ptmain.noAccountMode ? "OFFLINE" : "ONLINE"
-              } - RES ${simphiPlayer.customResourceMeta["author"]}`,
+              } - RES MoeFurina & ElyPrism`,
         simphiPlayer.app.canvas.width / 2 - lineScale * 0,
         simphiPlayer.app.canvas.height -
             lineScale * 0.3 -
