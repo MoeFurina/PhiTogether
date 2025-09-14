@@ -1,6 +1,6 @@
 {
-    "name": "PhiTogether Respack 1",
-    "author": "Team PhiTogether",
+    "name": "Phigros",
+    "author": "Phigros by Pigeon Games",
     "includesHitSongs": true,
     "res": {
         "HitFXRaw": "/src/respack/shared/clickRaw.png",
