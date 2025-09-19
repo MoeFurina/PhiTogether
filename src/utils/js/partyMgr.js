@@ -53,7 +53,7 @@ export const partyMgr = {
             },
             songList: {
                 rt: {
-                    chart: "https://charts.phitogether.focalors.ltd/song/r55828450/55828450.json",
+                    chart: "https://ptc.realtvop.top/song/r55828450/55828450.json",
                     unlockVideo: null,
                     charter: "o1b",
                     difficulty: "?",
@@ -66,9 +66,10 @@ export const partyMgr = {
                     userScore: [["NEW", "gray", "15px", 0.6], "0000000", "0.00%"],
                 },
                 2024: {
-                    chart: "https://charts.phitogether.focalors.ltd/song/r55828450/55828450.json",
+                    chart: "https://ptc.realtvop.top/song/r55828450/55828450.json",
                     unlockVideo: null,
                     charter: "o1b",
+                    illustration: "idk",
                     difficulty: "?",
                     id: "r60287348",
                     level: "SP",
@@ -83,8 +84,7 @@ export const partyMgr = {
                 if (
                     search.name &&
                     this.activate &&
-                    search.name.includes("2024") &&
-                    this.status.rtPlayed
+                    search.name.includes("2024")
                 ) {
                     console.log("flag 2024 activated");
                     this.payload("2024", loadChart);
