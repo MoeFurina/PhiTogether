@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   notiflix@3.2.6:
-    hash: 0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23
+    hash: f2s2buz6odzvxrmjolita4rdhe
     path: patches/notiflix@3.2.6.patch
 
 importers:
@@ -42,7 +42,7 @@ importers:
         version: 2.3.0
       notiflix:
         specifier: 3.2.6
-        version: 3.2.6(patch_hash=0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23)
+        version: 3.2.6(patch_hash=f2s2buz6odzvxrmjolita4rdhe)
       stackblur-canvas:
         specifier: ^2.7.0
         version: 2.7.0
@@ -50,8 +50,8 @@ importers:
         specifier: ^3.5.21
         version: 3.5.21
       vue-i18n:
-        specifier: ^9.14.5
-        version: 9.14.5(vue@3.5.21)
+        specifier: ^11.1.12
+        version: 11.1.12(vue@3.5.21)
       vue-router:
         specifier: ^4.5.1
         version: 4.5.1(vue@3.5.21)
@@ -370,16 +370,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@intlify/core-base@9.14.5':
-    resolution: {integrity: sha512-5ah5FqZG4pOoHjkvs8mjtv+gPKYU0zCISaYNjBNNqYiaITxW8ZtVih3GS/oTOqN8d9/mDLyrjD46GBApNxmlsA==}
+  '@intlify/core-base@11.1.12':
+    resolution: {integrity: sha512-whh0trqRsSqVLNEUCwU59pyJZYpU8AmSWl8M3Jz2Mv5ESPP6kFh4juas2NpZ1iCvy7GlNRffUD1xr84gceimjg==}
     engines: {node: '>= 16'}
 
-  '@intlify/message-compiler@9.14.5':
-    resolution: {integrity: sha512-IHzgEu61/YIpQV5Pc3aRWScDcnFKWvQA9kigcINcCBXN8mbW+vk9SK+lDxA6STzKQsVJxUPg9ACC52pKKo3SVQ==}
+  '@intlify/message-compiler@11.1.12':
+    resolution: {integrity: sha512-Fv9iQSJoJaXl4ZGkOCN1LDM3trzze0AS2zRz2EHLiwenwL6t0Ki9KySYlyr27yVOj5aVz0e55JePO+kELIvfdQ==}
     engines: {node: '>= 16'}
 
-  '@intlify/shared@9.14.5':
-    resolution: {integrity: sha512-9gB+E53BYuAEMhbCAxVgG38EZrk59sxBtv3jSizNL2hEWlgjBjAw1AwpLHtNaeda12pe6W20OGEa0TwuMSRbyQ==}
+  '@intlify/shared@11.1.12':
+    resolution: {integrity: sha512-Om86EjuQtA69hdNj3GQec9ZC0L0vPSAnXzB3gP/gyJ7+mA7t06d9aOAiqMZ+xEOsumGP4eEBlfl8zF2LOTzf2A==}
     engines: {node: '>= 16'}
 
   '@ionic/cli-framework-output@2.2.8':
@@ -1097,8 +1097,8 @@ packages:
       yaml:
         optional: true
 
-  vue-i18n@9.14.5:
-    resolution: {integrity: sha512-0jQ9Em3ymWngyiIkj0+c/k7WgaPO+TNzjKSNq9BvBQaKJECqn9cd9fL4tkDhB5G1QBskGl9YxxbDAhgbFtpe2g==}
+  vue-i18n@11.1.12:
+    resolution: {integrity: sha512-BnstPj3KLHLrsqbVU2UOrPmr0+Mv11bsUZG0PyCOzsawCivk8W00GMXHeVUWIDOgNaScCuZah47CZFE+Wnl8mw==}
     engines: {node: '>= 16'}
     peerDependencies:
       vue: ^3.0.0
@@ -1431,17 +1431,17 @@ snapshots:
   '@esbuild/win32-x64@0.25.10':
     optional: true
 
-  '@intlify/core-base@9.14.5':
+  '@intlify/core-base@11.1.12':
     dependencies:
-      '@intlify/message-compiler': 9.14.5
-      '@intlify/shared': 9.14.5
+      '@intlify/message-compiler': 11.1.12
+      '@intlify/shared': 11.1.12
 
-  '@intlify/message-compiler@9.14.5':
+  '@intlify/message-compiler@11.1.12':
     dependencies:
-      '@intlify/shared': 9.14.5
+      '@intlify/shared': 11.1.12
       source-map-js: 1.2.1
 
-  '@intlify/shared@9.14.5': {}
+  '@intlify/shared@11.1.12': {}
 
   '@ionic/cli-framework-output@2.2.8':
     dependencies:
@@ -1990,7 +1990,7 @@ snapshots:
 
   node-releases@2.0.21: {}
 
-  notiflix@3.2.6(patch_hash=0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23): {}
+  notiflix@3.2.6(patch_hash=f2s2buz6odzvxrmjolita4rdhe): {}
 
   open@8.4.2:
     dependencies:
@@ -2161,10 +2161,10 @@ snapshots:
       '@types/node': 20.19.17
       fsevents: 2.3.3
 
-  vue-i18n@9.14.5(vue@3.5.21):
+  vue-i18n@11.1.12(vue@3.5.21):
     dependencies:
-      '@intlify/core-base': 9.14.5
-      '@intlify/shared': 9.14.5
+      '@intlify/core-base': 11.1.12
+      '@intlify/shared': 11.1.12
       '@vue/devtools-api': 6.6.4
       vue: 3.5.21
 
