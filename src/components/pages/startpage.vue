@@ -24,7 +24,7 @@ export default {
         isPTFun() {
             return (
                 [80, 443, 1443, "1443"].includes(location.port) ||
-                location.host.endsWith("phitogether.focalors.ltd")
+                location.host.endsWith("phi.focalors.ltd")
             );
         },
         isPTApp() {
