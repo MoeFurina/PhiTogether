@@ -1,5 +1,5 @@
 export default [
-    "這是一條專屬於2.0版本的Tip！",
+    "這是一條專屬於3.0版本的Tip！",
     "sudo mkdir astroxxx",
     "玩家把官方未來要開發的東西都開發完了.jpg",
     "別人是 PhiTogether，我是 FalseAlone",

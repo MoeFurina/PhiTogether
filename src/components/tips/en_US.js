@@ -1,5 +1,5 @@
 export default [
-    "This is an exclusive tip for PhiTogether 2.0! ",
+    "This is an exclusive tip for PhiTogether 3.0! ",
     "sudo mkdir pt2.0",
     '"The players have developed everything the original game is supposed to have" be like: ',
     "Others play PhiTogether while I  play FalseAlone qwq",
