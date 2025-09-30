@@ -584,7 +584,7 @@
             },
             "resources": {
                 "title": "資源",
-                "usekwlevelOverbgm": "使用舊版結算音樂",
+                "usekwlevelOverbgm": "使用Phizone結算音樂",
                 "resourcesType": "資源包種類",
                 "resourceTypes": {
                     "preset1": "預設1",

@@ -27,7 +27,7 @@ export default [
     "Are you ready! Yooooooooo--",
     "You are probably playing PhiTogether if you see this tip",
     "We pay approximately $28 on our servers per month",
-    "You can use legacy LevelOver music by changing your settings",
+    "You can use Phizone LevelOver music by changing your settings",
     "PLEASE UPDATE YOUR BROWSER IM BEGGING YOU",
     'If "Undo Typing" always pops up on your iPhone/iPad\'s screen, you may go to Accessibility => Touch and uncheck "Shake to Undo"',
     function () {

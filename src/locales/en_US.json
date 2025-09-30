@@ -584,8 +584,8 @@
             },
             "resources": {
                 "title": "Resources",
-                "usekwlevelOverbgm": "Use Legacy LevelOver Music",
-                "resourcesType": "Resouce Pack Type",
+                "usekwlevelOverbgm": "Use Phizone LevelOver Music",
+                "resourcesType": "Resource Pack Type",
                 "resourceTypes": {
                     "preset1": "Preset 1",
                     "preset2": "Preset 2",

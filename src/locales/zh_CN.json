@@ -585,7 +585,7 @@
       },
       "resources": {
         "title": "资源",
-        "usekwlevelOverbgm": "使用旧版结算音乐",
+        "usekwlevelOverbgm": "使用Phizone结算音乐",
         "resourcesType": "资源包类型",
         "resourceTypes": {
           "preset1": "预设1",
