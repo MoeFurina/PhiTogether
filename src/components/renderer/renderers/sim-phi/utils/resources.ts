@@ -2,6 +2,7 @@ import { simphiPlayer } from "../playerMain";
 import { msgHandler } from "@utils/js/msgHandler";
 import shared from "@utils/js/shared";
 import { createCanvas } from "../utils/canvas";
+import { imgSplit2 } from "../assetsProcessor/imgProcessor";
 
 // 直接使用本地资源路径，避免 CORS 问题
 const localResourcePath = '/src/respack/shared/';
@@ -37,7 +38,7 @@ export async function loadResultResources() {
                                 // 特殊处理 Rank 资源
                                 if (resource.name === 'Rank') {
                                     // 直接存储原始Rank图片，不进行分割
-                                    simphiPlayer.res.Ranks = [simphiPlayer.res.Rank];
+                                    simphiPlayer.res.Ranks = await imgSplit2(simphiPlayer.res.Rank, rankWidth, simphiPlayer.res.Rank.height);
                                 }
                                 resolve();
                             } catch (e) {
@@ -76,45 +77,3 @@ export async function loadResultResources() {
     }
 }
 
-// 将图片分割成多个小图（用于 Rank 图标）
-async function imgSplit(img: ImageBitmap) {
-    // Rank图片通常包含多个等级图标排列在一起
-    // 假设Rank图片是水平排列的，每个等级图标宽高相等
-    
-    // 定义Rank等级数量（通常为6个：F, C, B, A, S, V）
-    const rankCount = 6;
-    
-    // 计算每个Rank图标的宽度和高度
-    const rankWidth = Math.floor(img.width / rankCount);
-    const rankHeight = img.height;
-    
-    const pieces = [];
-    
-    // 为每个Rank等级创建单独的图像
-    for (let i = 0; i < rankCount; i++) {
-        // 创建一个与原始Rank高度相同的正方形画布
-        const canvas = new OffscreenCanvas(rankHeight, rankHeight);
-        const ctx = canvas.getContext('2d');
-        if (!ctx) throw new Error('Failed to get canvas context');
-        
-        // 清除画布
-        ctx.clearRect(0, 0, rankHeight, rankHeight);
-        
-        // 计算居中位置
-        const offsetX = (rankHeight - rankWidth) / 2;
-        
-        // 从原图中裁剪出对应位置的Rank图标并居中绘制
-        ctx.drawImage(
-            img,                    // 源图像
-            i * rankWidth, 0,       // 源图像上的位置
-            rankWidth, rankHeight,  // 源图像上的尺寸
-            offsetX, 0,             // 目标位置（水平居中）
-            rankWidth, rankHeight   // 目标尺寸
-        );
-        
-        const piece = await createImageBitmap(canvas);
-        pieces.push(piece);
-    }
-    
-    return pieces;
-}
