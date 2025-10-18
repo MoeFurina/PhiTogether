@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   notiflix@3.2.6:
-    hash: 0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23
+    hash: f2s2buz6odzvxrmjolita4rdhe
     path: patches/notiflix@3.2.6.patch
 
 importers:
@@ -26,8 +26,8 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1(@capacitor/core@6.2.1)
       '@types/node':
-        specifier: ^20.19.17
-        version: 20.19.17
+        specifier: ^24.5.2
+        version: 24.5.2
       devtools-detector:
         specifier: ^2.0.25
         version: 2.0.25
@@ -42,7 +42,7 @@ importers:
         version: 2.3.0
       notiflix:
         specifier: 3.2.6
-        version: 3.2.6(patch_hash=0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23)
+        version: 3.2.6(patch_hash=f2s2buz6odzvxrmjolita4rdhe)
       stackblur-canvas:
         specifier: ^2.7.0
         version: 2.7.0
@@ -61,16 +61,16 @@ importers:
         version: 6.2.1
       '@vitejs/plugin-vue':
         specifier: ^5.2.4
-        version: 5.2.4(vite@6.3.6(@types/node@20.19.17))(vue@3.5.21)
+        version: 5.2.4(vite@6.3.6(@types/node@24.5.2))(vue@3.5.21)
       '@vitejs/plugin-vue-jsx':
         specifier: ^4.2.0
-        version: 4.2.0(vite@6.3.6(@types/node@20.19.17))(vue@3.5.21)
+        version: 4.2.0(vite@6.3.6(@types/node@24.5.2))(vue@3.5.21)
       prettier:
         specifier: 3.4.2
         version: 3.4.2
       vite:
         specifier: ^6.3.6
-        version: 6.3.6(@types/node@20.19.17)
+        version: 6.3.6(@types/node@24.5.2)
 
 packages:
 
@@ -552,8 +552,8 @@ packages:
   '@types/fs-extra@8.1.5':
     resolution: {integrity: sha512-0dzKcwO+S8s2kuF5Z9oUWatQJj5Uq/iqphEtE3GQJVRRYm/tD1LglU2UnXi2A8jLq5umkGouOXOR9y0n613ZwQ==}
 
-  '@types/node@20.19.17':
-    resolution: {integrity: sha512-gfehUI8N1z92kygssiuWvLiwcbOB3IRktR6hTDgJlXMYh5OvkPSRmgfoBUmfZt+vhwJtX7v1Yw4KvvAf7c5QKQ==}
+  '@types/node@24.5.2':
+    resolution: {integrity: sha512-FYxk1I7wPv3K2XBaoyH2cTnocQEu8AOZ60hPbsyukMPLv5/5qr7V1i8PLHdl6Zf87I+xZXFvPCXYjiTFq+YSDQ==}
 
   '@types/slice-ansi@4.0.0':
     resolution: {integrity: sha512-+OpjSaq85gvlZAYINyzKpLeiFkSC4EsC6IIiT6v6TLSU5k5U83fHGj9Lel8oKEXM0HqgrMVCjXPDPVICtxF7EQ==}
@@ -1037,8 +1037,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  undici-types@6.21.0:
-    resolution: {integrity: sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==}
+  undici-types@7.12.0:
+    resolution: {integrity: sha512-goOacqME2GYyOZZfb5Lgtu+1IDmAlAEu5xnD3+xTzS10hT0vzpf0SPjkXwAw9Jm+4n/mQGDP3LO8CPbYROeBfQ==}
 
   universalify@2.0.1:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
@@ -1630,28 +1630,28 @@ snapshots:
 
   '@types/fs-extra@8.1.5':
     dependencies:
-      '@types/node': 20.19.17
+      '@types/node': 24.5.2
 
-  '@types/node@20.19.17':
+  '@types/node@24.5.2':
     dependencies:
-      undici-types: 6.21.0
+      undici-types: 7.12.0
 
   '@types/slice-ansi@4.0.0': {}
 
-  '@vitejs/plugin-vue-jsx@4.2.0(vite@6.3.6(@types/node@20.19.17))(vue@3.5.21)':
+  '@vitejs/plugin-vue-jsx@4.2.0(vite@6.3.6(@types/node@24.5.2))(vue@3.5.21)':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-transform-typescript': 7.28.0(@babel/core@7.28.4)
       '@rolldown/pluginutils': 1.0.0-beta.38
       '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.28.4)
-      vite: 6.3.6(@types/node@20.19.17)
+      vite: 6.3.6(@types/node@24.5.2)
       vue: 3.5.21
     transitivePeerDependencies:
       - supports-color
 
-  '@vitejs/plugin-vue@5.2.4(vite@6.3.6(@types/node@20.19.17))(vue@3.5.21)':
+  '@vitejs/plugin-vue@5.2.4(vite@6.3.6(@types/node@24.5.2))(vue@3.5.21)':
     dependencies:
-      vite: 6.3.6(@types/node@20.19.17)
+      vite: 6.3.6(@types/node@24.5.2)
       vue: 3.5.21
 
   '@vue/babel-helper-vue-transform-on@1.5.0': {}
@@ -1990,7 +1990,7 @@ snapshots:
 
   node-releases@2.0.21: {}
 
-  notiflix@3.2.6(patch_hash=0ce2b35c270cb136e4337596ac296659de8408bf195aef0ad8ebf490add55c23): {}
+  notiflix@3.2.6(patch_hash=f2s2buz6odzvxrmjolita4rdhe): {}
 
   open@8.4.2:
     dependencies:
@@ -2135,7 +2135,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  undici-types@6.21.0: {}
+  undici-types@7.12.0: {}
 
   universalify@2.0.1: {}
 
@@ -2149,7 +2149,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  vite@6.3.6(@types/node@20.19.17):
+  vite@6.3.6(@types/node@24.5.2):
     dependencies:
       esbuild: 0.25.10
       fdir: 6.5.0(picomatch@4.0.3)
@@ -2158,7 +2158,7 @@ snapshots:
       rollup: 4.51.0
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 20.19.17
+      '@types/node': 24.5.2
       fsevents: 2.3.3
 
   vue-i18n@9.14.5(vue@3.5.21):
