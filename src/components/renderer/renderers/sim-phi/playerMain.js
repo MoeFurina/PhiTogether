@@ -34,6 +34,9 @@ import { OperationHandler } from "./components/OperationHandler";
 import { mainLoop } from "./renderer/Loop";
 import { loadRes } from "@renderers/sim-phi/components/ResourcePack";
 
+import { adjustSize } from "./utils/adjustSize";
+import { tween } from "./utils/tween";
+
 import { PlayController, PlayEvent } from "./utils/PlayController";
 
 const $id = query => document.getElementById(query);
@@ -422,6 +425,114 @@ export const simphiPlayer = {
         },
     }),
     hitManager: new HitManager(),
+
+    atDraw3: function(statData) {
+        const { app } = simphiPlayer;
+        const { ctxos: ctx, canvasos: canvas } = app;
+        
+        ctx.resetTransform();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.globalAlpha = 1;
+        
+        const bgImageBlur = simphiPlayer.background.getImageBlur();
+        ctx.drawImage(bgImageBlur, ...adjustSize(bgImageBlur, canvas, 1));
+        ctx.fillStyle = '#000';
+        ctx.globalAlpha = app.brightness;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 绘制褪色动画遮罩
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 1;
+        const k = 3.7320508075688776; // tan75°
+        ctx.setTransform(canvas.width - canvas.height / k, 0, -canvas.height / k, canvas.height, canvas.height / k, 0);
+        ctx.fillRect(0, 0, 1, tween.easeOutCubic(clip((simphiPlayer.timeInfo.timeEnd.second - 0.13) * 0.94)));
+        ctx.resetTransform();
+        
+        // 绘制结算界面黑条
+        ctx.globalCompositeOperation = 'destination-over';
+        const skew = (canvas.width - canvas.height / k) / (16 - 9 / k);
+        ctx.setTransform(skew / 120, 0, 0, skew / 120, app.wlen - skew * 8, app.hlen - skew * 4.5);
+        
+        // 绘制黑条和装饰
+        if (simphiPlayer.res.LevelOver4) ctx.drawImage(simphiPlayer.res.LevelOver4, 183, 42, 1184, 228);
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 0.27) / 0.83);
+        if (simphiPlayer.res.LevelOver1) ctx.drawImage(simphiPlayer.res.LevelOver1, 102, 378);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        if (simphiPlayer.res.LevelOver5) {
+            ctx.drawImage(simphiPlayer.res.LevelOver5, 700 * tween.easeOutCubic(clip(simphiPlayer.timeInfo.timeEnd.second * 1.25)) - 369, 91, 20, 80);
+        }
+        
+        // 曲名和等级
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'left';
+        ctx.font = '80px Custom,Noto Sans SC';
+        const levelText = simphiPlayer.chartInfo.difficultyString;
+        const chartName = simphiPlayer.chartInfo.name || 'Untitled';
+        fillTextNode(ctx, chartName, 700 * tween.easeOutCubic(clip(simphiPlayer.timeInfo.timeEnd.second * 1.25)) - 320, 160, 80);
+        ctx.font = '30px Custom,Noto Sans SC';
+        const textWidth = fillTextNode(ctx, levelText, 700 * tween.easeOutCubic(clip(simphiPlayer.timeInfo.timeEnd.second * 1.25)) - 317, 212, 30);
+        
+        // Rank图标
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 1.87) * 3.75);
+        const outerSize = 293 + clip((simphiPlayer.timeInfo.timeEnd.second - 1.87) * 3.75) * 100;
+        const innerSize = 410 - clip((simphiPlayer.timeInfo.timeEnd.second - 1.87) * 2.14) * 164;
+        if (simphiPlayer.res.LevelOver3) {
+            ctx.drawImage(simphiPlayer.res.LevelOver3, 661 - outerSize / 2, 545 - outerSize / 2, outerSize, outerSize);
+        }
+        if (simphiPlayer.res.Ranks && simphiPlayer.res.Ranks[simphiPlayer.stat.rankStatus]) {
+            ctx.drawImage(simphiPlayer.res.Ranks[simphiPlayer.stat.rankStatus], 661 - innerSize / 2, 545 - innerSize / 2, innerSize, innerSize);
+        }
+        
+        // 各种数据
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 0.87) * 2.5);
+        ctx.fillStyle = statData.newBestColor;
+        ctx.fillText(statData.newBestStr, 898, 433);
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.fillText(statData.scoreBest, 1180, 433);
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 1.87) * 2.5);
+        ctx.textAlign = 'right';
+        ctx.fillText(statData.scoreDelta, 1414, 433);
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 0.95) * 1.5);
+        ctx.textAlign = 'left';
+        ctx.fillText(simphiPlayer.stat.accStr, 352, 550);
+        ctx.fillText(simphiPlayer.stat.maxcombo.toString(), 1528, 550);
+        
+        // 速度显示
+        ctx.fillStyle = statData.textAboveColor;
+        ctx.fillText(app.speed === 1 ? '' : statData.textAboveStr.replace('{SPEED}', app.speed.toFixed(2)), 383 + Math.min(textWidth, 750), 212);
+        
+        // 状态显示
+        ctx.fillStyle = statData.textBelowColor;
+        ctx.fillText(statData.textBelowStr, 1355, 595);
+        
+        // 分数显示
+        ctx.fillStyle = '#fff';
+        ctx.textAlign = 'center';
+        ctx.font = '86px Custom,Noto Sans SC';
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 1.12) * 2.0);
+        ctx.fillText(simphiPlayer.stat.scoreStr, 1075, 569);
+        
+        // 判定信息
+        ctx.font = '26px Custom,Noto Sans SC';
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 0.87) * 2.5);
+        ctx.fillText(simphiPlayer.stat.perfect.toString(), 891, 650);
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 1.07) * 2.5);
+        ctx.fillText(simphiPlayer.stat.good.toString(), 1043, 650);
+        ctx.globalAlpha = clip((simphiPlayer.timeInfo.timeEnd.second - 1.27) * 2.5);
+        ctx.fillText(simphiPlayer.stat.bad.toString(), 1196, 650);
+        
+        // Reset canvas state
+        ctx.resetTransform();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = '#000';
+        const bgImage = simphiPlayer.background.getImage();
+        ctx.drawImage(bgImage, ...adjustSize(bgImage, canvas, 1));
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'source-over';
+    },
 };
 
 shared.game.simphi = simphiPlayer.app;
@@ -702,3 +813,126 @@ const enableFilter = $id("enableFilter");
 simphiPlayer.pauseHook = () =>
     simphiPlayer.emitter.eq("play") && simphiPlayer.playController.pause();
 simphiPlayer.app.reloadRes = loadRes;
+
+// --- 结算动画相关（从 sim-phi/src/index.ts 移植）
+function clip(num) {
+    if (num < 0) return 0;
+    if (num > 1) return 1;
+    return num;
+}
+
+function fillTextNode(text, x, y, size, maxWidth, ctx) {
+    ctx.font = `${size}px Custom,Noto Sans SC`;
+    const dx = ctx.measureText(text).width;
+    if (dx > maxWidth) ctx.font = `${(size / dx) * maxWidth}px Custom,Noto Sans SC`;
+    ctx.fillText(text, x, y);
+    return dx;
+}
+
+function atDraw3(statData) {
+    const ctxos = simphiPlayer.app.ctxos;
+    const canvasos = simphiPlayer.app.canvasos;
+    if (!ctxos || !canvasos) return;
+    ctxos.resetTransform();
+    ctxos.clearRect(0, 0, canvasos.width, canvasos.height);
+    ctxos.globalAlpha = 1;
+    const bgImageBlur = simphiPlayer.app.bgImageBlur || simphiPlayer.res['NoImageWhite'];
+    try {
+        ctxos.drawImage(bgImageBlur, ...adjustSize(bgImageBlur, canvasos, 1));
+    } catch (e) {
+        ctxos.fillStyle = '#000';
+        ctxos.fillRect(0, 0, canvasos.width, canvasos.height);
+    }
+    ctxos.fillStyle = '#000';
+    ctxos.globalAlpha = simphiPlayer.app.brightness || 1;
+    ctxos.fillRect(0, 0, canvasos.width, canvasos.height);
+    ctxos.globalCompositeOperation = 'destination-out';
+    ctxos.globalAlpha = 1;
+    const k = 3.7320508075688776;
+    ctxos.setTransform(canvasos.width - canvasos.height / k, 0, -canvasos.height / k, canvasos.height, canvasos.height / k, 0);
+    ctxos.fillRect(0, 0, 1, tween.easeOutCubic ? tween.easeOutCubic(clip((simphiPlayer.animationTimer.end.second - 0.13) * 0.94)) : clip((simphiPlayer.animationTimer.end.second - 0.13) * 0.94));
+    ctxos.resetTransform();
+    ctxos.globalCompositeOperation = 'destination-over';
+    const skew = (canvasos.width - canvasos.height / k) / (16 - 9 / k);
+    ctxos.setTransform(skew / 120, 0, 0, skew / 120, simphiPlayer.app.wlen - skew * 8, simphiPlayer.app.hlen - skew * 4.5);
+    if (simphiPlayer.res.LevelOver4) ctxos.drawImage(simphiPlayer.res.LevelOver4, 183, 42, 1184, 228);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 0.27) / 0.83);
+    if (simphiPlayer.res.LevelOver1) ctxos.drawImage(simphiPlayer.res.LevelOver1, 102, 378);
+    ctxos.globalCompositeOperation = 'source-over';
+    ctxos.globalAlpha = 1;
+    if (simphiPlayer.res.LevelOver5) ctxos.drawImage(simphiPlayer.res.LevelOver5, 700 * tween.easeOutCubic(clip(simphiPlayer.animationTimer.end.second * 1.25)) - 369, 91, 20, 80);
+    ctxos.fillStyle = '#fff';
+    ctxos.textAlign = 'left';
+    const name = simphiPlayer.chartInfo && simphiPlayer.chartInfo.name ? simphiPlayer.chartInfo.name : (simphiPlayer.app.inputName ? simphiPlayer.app.inputName.value || simphiPlayer.app.inputName.placeholder : '');
+    fillTextNode(name, 700 * tween.easeOutCubic(clip(simphiPlayer.animationTimer.end.second * 1.25)) - 320, 160, 80, 1500, ctxos);
+    const levelText = simphiPlayer.chartInfo ? simphiPlayer.chartInfo.difficultyString || simphiPlayer.chartData.levelText : simphiPlayer.chartData.levelText;
+    const textWidth = fillTextNode(levelText, 700 * tween.easeOutCubic(clip(simphiPlayer.animationTimer.end.second * 1.25)) - 317, 212, 30, 750, ctxos);
+    ctxos.font = '30px Custom,Noto Sans SC';
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.87) * 3.75);
+    const outerSize = 293 + clip((simphiPlayer.animationTimer.end.second - 1.87) * 3.75) * 100;
+    const innerSize = 410 - clip((simphiPlayer.animationTimer.end.second - 1.87) * 2.14) * 164;
+    if (simphiPlayer.res.LevelOver3) ctxos.drawImage(simphiPlayer.res.LevelOver3, 661 - outerSize / 2, 545 - outerSize / 2, outerSize, outerSize);
+    if (simphiPlayer.res.Ranks) {
+        const rankIdx = (simphiPlayer.stat && simphiPlayer.stat.rankStatus) ? simphiPlayer.stat.rankStatus : 0;
+        const rankImg = simphiPlayer.res.Ranks[rankIdx] || simphiPlayer.res.Ranks[0];
+        if (rankImg) ctxos.drawImage(rankImg, 661 - innerSize / 2, 545 - innerSize / 2, innerSize, innerSize);
+    }
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 0.87) * 2.5);
+    ctxos.fillStyle = statData.newBestColor || '#fff';
+    ctxos.fillText(statData.newBestStr || '', 898, 433);
+    ctxos.fillStyle = '#fff';
+    ctxos.textAlign = 'center';
+    ctxos.fillText(statData.scoreBest || '', 1180, 433);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.87) * 2.5);
+    ctxos.textAlign = 'right';
+    ctxos.fillText(statData.scoreDelta || '', 1414, 433);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 0.95) * 1.5);
+    ctxos.textAlign = 'left';
+    ctxos.fillText(simphiPlayer.stat.accStr || '', 352, 550);
+    ctxos.fillText(String(simphiPlayer.stat.maxcombo || ''), 1528, 550);
+    ctxos.fillStyle = statData.textAboveColor || '#fff';
+    ctxos.fillText((simphiPlayer.app.speed === 1 ? '' : (statData.textAboveStr || '').replace('{SPEED}', (simphiPlayer.app.speed || 1).toFixed(2))) || '', 383 + Math.min(textWidth, 750), 212);
+    ctxos.fillStyle = statData.textBelowColor || '#fff';
+    ctxos.fillText(statData.textBelowStr || '', 1355, 595);
+    ctxos.fillStyle = '#fff';
+    ctxos.textAlign = 'center';
+    ctxos.font = '86px Custom,Noto Sans SC';
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.12) * 2.0);
+    ctxos.fillText(simphiPlayer.stat.scoreStr || '', 1075, 569);
+    ctxos.font = '26px Custom,Noto Sans SC';
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 0.87) * 2.5);
+    ctxos.fillText(String(simphiPlayer.stat.perfect || ''), 891, 650);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.07) * 2.5);
+    ctxos.fillText(String(simphiPlayer.stat.good || ''), 1043, 650);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.27) * 2.5);
+    ctxos.fillText(String(simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[6] : ''), 1196, 650);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.47) * 2.5);
+    ctxos.fillText(String(simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[2] : ''), 1349, 650);
+    ctxos.font = '22px Custom,Noto Sans SC';
+    const transition = clip((simphiPlayer.pressTime > 0 ? simphiPlayer.animationTimer.end.second - simphiPlayer.pressTime : 0.2 - simphiPlayer.animationTimer.end.second - simphiPlayer.pressTime) * 5.0);
+    ctxos.globalAlpha = 0.8 * clip((simphiPlayer.animationTimer.end.second - 0.87) * 2.5) * transition;
+    ctxos.fillStyle = '#696';
+    ctxos.fill(new Path2D('M841,718s-10,0-10,10v80s0,10,10,10h100s10,0,10-10v-80s0-10-10-10h-40l-10-20-10,20h-40z'));
+    ctxos.globalAlpha = 0.8 * clip((simphiPlayer.animationTimer.end.second - 1.07) * 2.5) * transition;
+    ctxos.fillStyle = '#669';
+    ctxos.fill(new Path2D('M993,718s-10,0-10,10v80s0,10,10,10h100s10,0,10-10v-80s0-10-10-10h-40l-10-20-10,20h-40z'));
+    ctxos.fillStyle = '#fff';
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 0.97) * 2.5) * transition;
+    ctxos.fillText(`Early: ${simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[5] : ''}`, 891, 759);
+    ctxos.fillText(`Late: ${simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[1] : ''}`, 891, 792);
+    ctxos.globalAlpha = clip((simphiPlayer.animationTimer.end.second - 1.17) * 2.5) * transition;
+    ctxos.fillText(`Early: ${simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[7] : ''}`, 1043, 759);
+    ctxos.fillText(`Late: ${simphiPlayer.stat.noteRank ? simphiPlayer.stat.noteRank[3] : ''}`, 1043, 792);
+    ctxos.resetTransform();
+    ctxos.globalCompositeOperation = 'destination-over';
+    ctxos.globalAlpha = 1;
+    ctxos.fillStyle = '#000';
+    const bgImage = simphiPlayer.app.bgImage || simphiPlayer.res['NoImageWhite'];
+    try { ctxos.drawImage(bgImage, ...adjustSize(bgImage, canvasos, 1)); } catch (e) { ctxos.fillRect(0,0,canvasos.width, canvasos.height); }
+    ctxos.fillRect(0, 0, canvasos.width, canvasos.height);
+    ctxos.globalCompositeOperation = 'source-over';
+}
+
+// Hook animationTimer.end to draw result when active
+// expose atDraw3 so renderer can use it
+simphiPlayer.atDraw3 = atDraw3;

@@ -110,7 +110,7 @@ export function mainLoop() {
         //     50
         //   )
         // };
-        simphiPlayer.app.ctxos.textAlign = null;
+        simphiPlayer.app.ctxos.textAlign = "center";
     }
     if (
         !simphiPlayer.emitter.eq("play") &&
