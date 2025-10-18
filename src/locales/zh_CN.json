@@ -485,7 +485,10 @@
     "loading": {
       "imgLoadingError": "检测到图片加载异常，请关闭所有应用程序然后重试",
       "resLoadFailed1": "错误：{0}个资源加载失败（点击查看不了详情）",
-      "resLoadFailed2": "资源加载失败，请检查您的网络连接然后重试：\n{0}"
+      "resLoadFailed2": "资源加载失败，请检查您的网络连接然后重试：\n{0}",
+      "loadingResources": "正在加载资源",
+      "resNotFound": "资源未找到",
+      "resLoadFailed": "资源加载失败"
     },
     "prprCustomRes": {
       "applied": "自定义资源包应用完成",

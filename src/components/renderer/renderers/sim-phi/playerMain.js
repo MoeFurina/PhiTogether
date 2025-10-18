@@ -13,6 +13,7 @@ import { gauge } from "./plugins/gauge";
 
 import { imgShader, imgSplit } from "./assetsProcessor/imgProcessor";
 import { handleFile } from "./assetsProcessor/uploader";
+import { loadResultResources } from "./utils/resources";
 
 import { createCanvas } from "./utils/canvas";
 import { adjustInfo } from "./utils/adjustInfo";
@@ -185,6 +186,10 @@ export const simphiPlayer = {
             })()
         )
             return msgHandler.sendError(shared.game.i18n.t("simphi.loading.imgLoadingError"));
+        
+        // 加载结算界面所需的资源
+        await loadResultResources();
+        
         // if (ptSettings.resourcesType === "prpr-custom") await loadprprCustomRes();
         // msgHandler.sendError(shared.game.i18n.t("respack.unavailableNow"));  // disable custom respack for now
         shared.game.ptmain.simphiLoaded();
