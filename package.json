@@ -33,7 +33,7 @@
         "@capacitor/cli": "^6.2.1",
         "@vitejs/plugin-vue": "^5.2.4",
         "@vitejs/plugin-vue-jsx": "^4.2.0",
-        "prettier": "3.4.2",
+        "prettier": "3.6.2",
         "vite": "^6.4.0"
     },
     "pnpm": {
