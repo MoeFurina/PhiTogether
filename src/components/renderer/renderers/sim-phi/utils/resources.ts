@@ -34,11 +34,8 @@ export async function loadResultResources() {
                             try {
                                 const blob = new Blob([xhr.response]);
                                 simphiPlayer.res[resource.name] = await createImageBitmap(blob);
-                                
-                                // 特殊处理 Rank 资源
                                 if (resource.name === 'Rank') {
-                                    // 直接存储原始Rank图片，不进行分割
-                                    simphiPlayer.res.Ranks = await imgSplit2(simphiPlayer.res.Rank, rankWidth, simphiPlayer.res.Rank.height);
+                                    simphiPlayer.res.Ranks = await imgSplit2(simphiPlayer.res.Rank);
                                 }
                                 resolve();
                             } catch (e) {
