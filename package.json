@@ -15,10 +15,10 @@
     },
     "dependencies": {
         "@capacitor/android": "^6.2.1",
-        "@capacitor/app": "^7.1.0",
+        "@capacitor/app": "^7.1.1",
         "@capacitor/core": "^6.2.1",
         "@capacitor/ios": "^6.2.1",
-        "@types/node": "^20.19.25",
+        "@types/node": "^20.19.26",
         "devtools-detector": "^2.0.25",
         "eruda": "^3.4.3",
         "file-saver": "^2.0.5",
@@ -27,7 +27,7 @@
         "stackblur-canvas": "^2.7.0",
         "vue": "^3.5.25",
         "vue-i18n": "^9.14.5",
-        "vue-router": "^4.6.3"
+        "vue-router": "^4.6.4"
     },
     "devDependencies": {
         "@capacitor/cli": "^6.2.1",
