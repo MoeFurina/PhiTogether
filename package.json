@@ -15,17 +15,17 @@
     },
     "dependencies": {
         "@capacitor/android": "^6.2.1",
-        "@capacitor/app": "^7.1.1",
+        "@capacitor/app": "^7.1.2",
         "@capacitor/core": "^6.2.1",
         "@capacitor/ios": "^6.2.1",
-        "@types/node": "^20.19.27",
+        "@types/node": "^20.19.43",
         "devtools-detector": "^2.0.25",
         "eruda": "^3.4.3",
         "file-saver": "^2.0.5",
         "md5": "^2.3.0",
         "notiflix": "3.2.6",
         "stackblur-canvas": "^2.7.0",
-        "vue": "^3.5.26",
+        "vue": "^3.5.40",
         "vue-i18n": "^9.14.5",
         "vue-router": "^4.6.4"
     },
@@ -34,11 +34,9 @@
         "@vitejs/plugin-vue": "^5.2.4",
         "@vitejs/plugin-vue-jsx": "^4.2.0",
         "prettier": "3.4.2",
-        "vite": "^6.4.1"
+        "vite": "^6.4.3"
     },
-    "pnpm": {
-        "patchedDependencies": {
-            "notiflix@3.2.6": "patches/notiflix@3.2.6.patch"
-        }
+    "patchedDependencies": {
+        "notiflix@3.2.6": "patches/notiflix@3.2.6.patch"
     }
 }
