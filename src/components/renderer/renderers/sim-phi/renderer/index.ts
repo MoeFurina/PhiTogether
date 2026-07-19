@@ -388,7 +388,8 @@ export class Renderer {
                     if (i.realTime > timeChart) {
                         i.showPoint = true;
                         i.alpha =
-                            dy <= -1e-3 * this.scaleY || (shared.game.ptmain.gameConfig.enableVP && realgetY(i) * 0.6 > 2)
+                            dy <= -1e-3 * this.scaleY ||
+                            (shared.game.ptmain.gameConfig.enableVP && realgetY(i) * 0.6 > 2)
                                 ? 0
                                 : i.type === 3 && i.speed === 0
                                   ? 0

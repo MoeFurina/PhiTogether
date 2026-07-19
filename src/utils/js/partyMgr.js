@@ -81,11 +81,7 @@ export const partyMgr = {
                 },
             },
             hook(search, loadChart) {
-                if (
-                    search.name &&
-                    this.activate &&
-                    search.name.includes("2024")
-                ) {
+                if (search.name && this.activate && search.name.includes("2024")) {
                     console.log("flag 2024 activated");
                     this.payload("2024", loadChart);
                     return true;

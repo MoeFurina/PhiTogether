@@ -12,6 +12,7 @@ import PZRankSingleComponent from "../pages/pzRankSingle.vue";
 import ReplayPageComponent from "../pages/replayPage.vue";
 import ChangeLogsComponent from "../pages/changelogs.vue";
 import LoadingPageComponent from "../pages/loadingPage.vue";
+import IntroSequenceComponent from "../pages/introSequence.vue";
 import multiIndexPageComponent from "../pages/multiIndex.vue";
 
 const EmptyPageComponent = { name: "Empty", template: "<span></span>" };
@@ -31,6 +32,7 @@ const routes = [
     { path: "/replayPage", component: ReplayPageComponent },
     { path: "/changelogs", component: ChangeLogsComponent },
     { path: "/loading", component: LoadingPageComponent },
+    { path: "/introSequence", component: IntroSequenceComponent },
     { path: "/multiIndex", component: multiIndexPageComponent },
     // 虚拟页面
     { path: "/multipanel", component: EmptyPageComponent },

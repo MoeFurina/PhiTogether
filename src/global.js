@@ -1248,9 +1248,11 @@ const ptAppInstance = createApp({
             hook.chartInfo.composer = songInfo.composer;
             hook.chartInfo.charter = this.cleanStr(chartInfo.charter);
             hook.chartInfo.difficultyString = `${chartInfo.level} Lv.${
-                typeof chartInfo.difficulty === "string" ? chartInfo.difficulty : (
-                    chartInfo.difficulty === 0 ? "?" : Math.floor(chartInfo.difficulty).toString()
-                )
+                typeof chartInfo.difficulty === "string"
+                    ? chartInfo.difficulty
+                    : chartInfo.difficulty === 0
+                      ? "?"
+                      : Math.floor(chartInfo.difficulty).toString()
             }`;
             let saved;
             saved = localStorage.getItem("PTSavedOffsets");

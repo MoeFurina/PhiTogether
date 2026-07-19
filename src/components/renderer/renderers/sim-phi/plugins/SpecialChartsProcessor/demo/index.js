@@ -43,13 +43,11 @@ export default function () {
                 btn.onclick = function () {
                     btn.onclick = null;
                     btn.remove();
-                    const handler = img =>
-                        uploader.fireLoad({ name: "demo.zip" }, decodeAlt(img));
+                    const handler = img => uploader.fireLoad({ name: "demo.zip" }, decodeAlt(img));
                     const xhr = new XMLHttpRequest();
                     xhr.open("GET", "//i0.hdslb.com/bfs/music/1682346166.jpg", true);
                     xhr.responseType = "blob";
-                    xhr.onprogress = evt =>
-                        uploader.fireProgress(evt.loaded, evt.total);
+                    xhr.onprogress = evt => uploader.fireProgress(evt.loaded, evt.total);
                     xhr.onloadend = () => createImageBitmap(xhr.response).then(handler);
                     setNoReferrer(() => xhr.send());
                 };

@@ -160,7 +160,7 @@ export const PhiZoneAPI = {
                     requestOptions
                 );
                 const result = await response.json();
-                
+
                 if (result.userAdditionInfo) {
                     if (result.userAdditionInfo.isPTDeveloper) res(result.userAdditionInfo);
                 } else {

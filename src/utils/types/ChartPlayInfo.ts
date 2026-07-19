@@ -12,4 +12,4 @@ export const ChartPlayInfoDefaults: ChartPlayInfo = {
     illustrator: "unknown",
     charter: "unknown",
     difficultyString: "SP Lv.?",
-}
+};

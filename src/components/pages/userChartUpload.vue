@@ -118,10 +118,10 @@
                 //     !selectLevel.value
                 // )
                 //     // if (
-                    //     await shared.game.msgHandler.confirm(
-                    //         this.$t("userChartEdit.askToFillWithUK")
-                    //     )
-                    // ) {
+                //     await shared.game.msgHandler.confirm(
+                //         this.$t("userChartEdit.askToFillWithUK")
+                //     )
+                // ) {
                 // if (selectLevel.value.includes(".")) {
                 //     const levelNum = parseFloat(selectLevel.value);
                 //     if (

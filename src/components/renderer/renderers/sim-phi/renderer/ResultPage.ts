@@ -8,12 +8,12 @@ import { ChartPlayInfoDefaults } from "@utils/types/ChartPlayInfo";
 
 export function resultPageRenderer(statData) {
     // Prefer shared atDraw3 implementation if available (moved from original index.ts)
-    if (typeof simphiPlayer.atDraw3 === 'function') {
+    if (typeof simphiPlayer.atDraw3 === "function") {
         try {
             simphiPlayer.atDraw3(statData);
             return;
         } catch (e) {
-            console.warn('atDraw3 failed, fallback to inline renderer', e);
+            console.warn("atDraw3 failed, fallback to inline renderer", e);
         }
     }
     // fallback: original drawing logic preserved

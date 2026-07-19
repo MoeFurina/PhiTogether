@@ -196,7 +196,14 @@
         "config": "Gameplay Config"
     },
     "loadingPage": {
-        "loadingRes": "Loading Resources"
+        "loadingRes": "Loading Resources",
+        "initializing": "Initializing",
+        "loadingRenderer": "Loading Renderer",
+        "ready": "Ready",
+        "loading": "Loading"
+    },
+    "introSequence": {
+        "welcome": "Welcome to PhiTogether"
     },
     "login": {
         "usernameAndPasswordCantBeEmpty": "Empty value detected",

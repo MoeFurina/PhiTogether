@@ -196,7 +196,14 @@
         "config": "遊玩配置"
     },
     "loadingPage": {
-        "loadingRes": "正在加載資源"
+        "loadingRes": "正在加載資源",
+        "initializing": "正在初始化",
+        "loadingRenderer": "正在加載渲染器",
+        "ready": "準備就緒",
+        "loading": "載入中"
+    },
+    "introSequence": {
+        "welcome": "Welcome To PhiTogether"
     },
     "login": {
         "usernameAndPasswordCantBeEmpty": "帳戶名和密碼不得為空！",
