@@ -42,18 +42,10 @@
             },
         },
         async mounted() {
-            const untilFullscreen = () => {
-                return new Promise(res => {
-                    const checkOnce = () => {
-                        if (shared.game.requestedFullscreen) res();
-                        else setTimeout(checkOnce, 100);
-                    };
-                    setTimeout(checkOnce, 100);
-                });
-            };
-
-            await untilFullscreen();
-
+            // Override shared.game.loaded immediately on mount,
+            // before waiting for anything, so playerLoaded() always
+            // finds the real callback — even if the race condition
+            // fires loaded() before untilFullscreen resolves.
             shared.game.loaded = () => {
                 this.loaded = true;
                 this.loadingPhase = "ready";
@@ -72,6 +64,21 @@
                     this.goToIntro();
                 }, 500);
             };
+
+            const untilFullscreen = () => {
+                return new Promise(res => {
+                    const checkOnce = () => {
+                        if (shared.game.requestedFullscreen) res();
+                        else setTimeout(checkOnce, 100);
+                    };
+                    setTimeout(checkOnce, 100);
+                    // Safety timeout: proceed after 30s even if fullscreen
+                    // never confirms, so the page doesn't hang forever.
+                    setTimeout(res, 30000);
+                });
+            };
+
+            await untilFullscreen();
 
             const originalL = ploading.l.bind(ploading);
             const originalR = ploading.r.bind(ploading);
