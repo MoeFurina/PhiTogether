@@ -690,7 +690,7 @@ export default {
                 return;
             }
             if (this.gaming) {
-                playController.stop();
+                self.hook && self.hook.playController && self.hook.playController.stop();
                 this.gaming = false;
             }
             this.selfExit = true;
@@ -949,7 +949,7 @@ export default {
                         } else
                             (that.exited = true),
                                 (that.room.closed = true),
-                                playController.stop(),
+                                self.hook && self.hook.playController && self.hook.playController.stop(),
                                 that.showStat("playerRank");
                         break;
                     case "exit":
@@ -957,7 +957,7 @@ export default {
                             if (thisevt.extraInfo.type === 1 && !that.selfExit) break;
                             localStorage.removeItem("lastMultiInfo");
                             (that.exited = true),
-                                playController.stop();
+                                self.hook && self.hook.playController && self.hook.playController.stop();
                             shared.game.msgHandler.info(that.$t("multiplayer.exitRoom.exited")).then(async () => {
                                 localStorage.removeItem("lastMultiInfo");
                                 if (that.room.stage == 0) {
@@ -1015,7 +1015,7 @@ export default {
                         }, 10000);
                         break;
                     case "nextTrack":
-                        playController.stop();
+                        self.hook && self.hook.playController && self.hook.playController.stop();
                         that.room.stage = 1;
                         that.chartLoaded = false;
                         that.room.playRound++;
