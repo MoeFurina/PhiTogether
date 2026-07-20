@@ -1,5 +1,7 @@
 /**
- * PhiTogether 多人游戏后端服务器
+ * PhiTogether 多人游戏后端服务器 (Deno 原生版)
+ *
+ * 零 npm 依赖，直接 `deno run -A server/index.js`
  *
  * HTTP API:
  *  GET    /api/multi/requestRoom/:roomId   - 请求房间服务器地址
@@ -16,243 +18,48 @@
  *   - 后续双发 JSON 消息
  */
 
-import express from 'express';
-import { createServer } from 'http';
-import { WebSocketServer } from 'ws';
-import cors from 'cors';
-import crypto from 'crypto';
 import RoomManager from './roomManager.js';
 
 // ==================== 配置 ====================
-const PORT = parseInt(process.env.PORT) || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
+const PORT = parseInt(Deno.env.get('PORT') || '3000');
+const HOST = Deno.env.get('HOST') || '0.0.0.0';
 // wsConn 格式: "host:port" (不含协议，前端会自己加 ws://)
-const EXTERNAL_HOST = process.env.EXTERNAL_HOST || `localhost:${PORT}`;
+const EXTERNAL_HOST = Deno.env.get('EXTERNAL_HOST') || `localhost:${PORT}`;
 const SUPPORTED_VERSIONS = ['4.0.0'];
+const startTime = Date.now();
 
 // ==================== 初始化 ====================
-const app = express();
-const server = createServer(app);
-const wss = new WebSocketServer({ server, maxPayload: 1024 * 1024 * 50 });
 const roomManager = new RoomManager();
 
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-
-// ==================== HTTP API ====================
-
-/**
- * 1. 请求房间服务器地址
- * GET /api/multi/requestRoom/:roomId?v=version
- *
- * 返回 { code, msg, server_addr }
- *   code=0  -> 房间存在，可加入
- *   code=-2 -> 房间不存在，可创建
- *   code=1  -> 错误
- */
-app.get('/api/multi/requestRoom/:roomId', (req, res) => {
-  const { roomId } = req.params;
-  const version = req.query.v || '0.0.0';
-
-  if (!SUPPORTED_VERSIONS.includes(version)) {
-    return res.json({ code: 1, msg: 'updatePTApp', server_addr: '' });
-  }
-
-  const room = roomManager.getRoom(roomId);
-  if (room) {
-    if (room.closed) {
-      return res.json({ code: 1, msg: 'roomClosedMsg', server_addr: '' });
-    }
-    return res.json({ code: 0, msg: 'roomAvailable', server_addr: EXTERNAL_HOST });
-  }
-
-  res.json({ code: -2, msg: 'canCreateRoom', server_addr: EXTERNAL_HOST });
-});
-
-/**
- * 2. 搜索房间列表
- * GET /api/multi/searchRoom?by=id&param1=xxx&param2=xxx
- */
-app.get('/api/multi/searchRoom', (req, res) => {
-  const by = req.query.by || 'none';
-  const param1 = req.query.param1 || '';
-  const param2 = req.query.param2 || '';
-  res.json(roomManager.searchRooms(by, param1, param2));
-});
-
-/**
- * 3. 创建房间
- * POST /api/multi/createRoom/:roomId
- * Body: { access_token, compete_mode, public, description }
- *
- * 返回 { code, selfRoom, selfUser, wsConn }
- *   wsConn 格式: "host:port/roomId/playerId"
- *   前端会将此用于 WebSocket 连接路径
- */
-app.post('/api/multi/createRoom/:roomId', (req, res) => {
-  const { roomId } = req.params;
-  const { access_token, compete_mode, public: isPublic, description } = req.body;
-
-  const userInfo = parseUserFromToken(access_token);
-  if (!userInfo) {
-    return res.json({ code: 1, msg: 'error' });
-  }
-
-  const result = roomManager.createRoom(
-    roomId, userInfo,
-    compete_mode || false,
-    description || '',
-    isPublic || false
-  );
-
-  if (result.code !== 0) {
-    return res.json({ code: result.code, msg: result.msg });
-  }
-
-  const room = result.room;
-  // wsConn 包含路径信息，用于 WebSocket 自动注册
-  const wsConn = `${EXTERNAL_HOST}/${encodeURIComponent(roomId)}/${encodeURIComponent(userInfo.id)}`;
-
-  console.log(`[ROOM] Created "${roomId}" by ${userInfo.name} (${userInfo.id})`);
-
-  res.json({
-    code: 0,
-    selfRoom: room.getFullState(),
-    selfUser: { ...userInfo, isOwner: true },
-    wsConn,
-  });
-});
-
-/**
- * 4. 加入房间
- * POST /api/multi/joinRoom/:roomId
- * Body: { access_token }
- */
-app.post('/api/multi/joinRoom/:roomId', (req, res) => {
-  const { roomId } = req.params;
-  const { access_token } = req.body;
-
-  const userInfo = parseUserFromToken(access_token);
-  if (!userInfo) {
-    return res.json({ code: 1, msg: 'error' });
-  }
-
-  const result = roomManager.joinRoom(roomId, userInfo);
-  if (result.code !== 0) {
-    return res.json({ code: result.code, msg: result.msg });
-  }
-
-  const room = result.room;
-  const wsConn = `${EXTERNAL_HOST}/${encodeURIComponent(roomId)}/${encodeURIComponent(userInfo.id)}`;
-
-  console.log(`[ROOM] ${userInfo.name} (${userInfo.id}) joined "${roomId}"`);
-
-  res.json({
-    code: 0,
-    selfRoom: room.getFullState(),
-    selfUser: { ...userInfo, isOwner: userInfo.id === room.owner },
-    wsConn,
-  });
-});
-
-/**
- * 5. 健康检查
- */
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    rooms: roomManager.rooms.size,
-    version: '4.0.0',
-    uptime: process.uptime(),
-  });
-});
-
-/**
- * 6. 错误上报 (兼容前端 errHandler.js)
- * POST /errReport
- * Body: FormData { page, file, msg, stack, ver, uid }
- */
-app.post('/errReport', (req, res) => {
-  const { page, file, msg, stack, ver, uid } = req.body;
-  console.log(`[ERRREPORT] ver=${ver} uid=${uid} page=${page} msg=${msg}`);
-  // 可持久化到文件/数据库，这里仅记录日志
-  res.json({ code: 0 });
-});
-
-/**
- * 7. 遥测 ping (兼容前端 errHandler.js)
- * GET /t/o
- */
-app.get('/t/o', (req, res) => {
-  res.json({ ok: true });
-});
-
-// ==================== WebSocket ====================
-
-wss.on('connection', (ws, req) => {
-  // 从 URL 路径提取 roomId/playerId
-  // 路径格式: /roomId/playerId
-  const pathname = req.url || '/';
-  const registered = roomManager.registerWSConnectionByPath(ws, pathname);
-
-  if (!registered) {
-    // 如果路径不合法，发 refused 后关闭
-    console.log(`[WS] Rejected connection from ${pathname} (invalid path)`);
-    ws.send(JSON.stringify({ type: 'refused' }));
-    ws.close();
-    return;
-  }
-
-  // 提取 info 用于日志
-  const parts = pathname.replace(/^\/+/, '').split('/');
-  const roomId = decodeURIComponent(parts[0]);
-  const playerId = decodeURIComponent(parts[1]);
-  console.log(`[WS] ${playerId} connected to room ${roomId}`);
-
-  // 发送 alive 确认连接
-  ws.send(JSON.stringify({ type: 'alive' }));
-
-  // 心跳超时检测
-  let heartbeatTimer = null;
-  let heartbeatMissed = 0;
-
-  heartbeatTimer = setInterval(() => {
-    heartbeatMissed++;
-    if (heartbeatMissed > 3) {
-      clearInterval(heartbeatTimer);
-      console.log(`[WS] ${playerId} heartbeat timeout`);
-      try { ws.close(); } catch (e) { /* ignore */ }
-    }
-  }, 15000);
-
-  ws.on('message', (data) => {
-    try {
-      const message = data.toString();
-      // 重置心跳
-      const parsed = JSON.parse(message);
-      if (parsed.action === 'alive') {
-        heartbeatMissed = 0;
-      }
-      roomManager.handleWSMessage(ws, message);
-    } catch (e) {
-      console.error(`[WS] Message error from ${playerId}:`, e.message);
-    }
-  });
-
-  ws.on('close', () => {
-    roomManager.unregisterWSConnection(ws);
-    if (heartbeatTimer) clearInterval(heartbeatTimer);
-    console.log(`[WS] ${playerId} disconnected from room ${roomId}`);
-  });
-
-  ws.on('error', () => {
-    roomManager.unregisterWSConnection(ws);
-    if (heartbeatTimer) clearInterval(heartbeatTimer);
-  });
-});
+// ==================== CORS ====================
+const CORS_HEADERS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
 
 // ==================== 辅助函数 ====================
+
+function jsonResponse(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
+  });
+}
+
+function textResponse(text, status = 200) {
+  return new Response(text, {
+    status,
+    headers: { ...CORS_HEADERS, 'Content-Type': 'text/plain' },
+  });
+}
+
+/** base64url → UTF-8 字符串 */
+function base64urlDecode(s) {
+  s = s.replace(/-/g, '+').replace(/_/g, '/');
+  while (s.length % 4) s += '=';
+  return atob(s);
+}
 
 function parseUserFromToken(token) {
   if (!token || token === 'null' || token === 'undefined') {
@@ -264,7 +71,7 @@ function parseUserFromToken(token) {
     if (token.includes('.')) {
       const parts = token.split('.');
       if (parts.length >= 2) {
-        const decoded = Buffer.from(parts[1], 'base64url').toString('utf8');
+        const decoded = base64urlDecode(parts[1]);
         const parsed = JSON.parse(decoded);
         return {
           id: parsed.sub || parsed.id || parsed.userId || 'user_' + crypto.randomUUID().slice(0, 8),
@@ -282,9 +89,9 @@ function parseUserFromToken(token) {
         name: parsed.name || parsed.username || 'Player',
         avatar: parsed.avatar || '',
       };
-    } catch (e) {
+    } catch (_) {
       // base64 JSON
-      const decoded = Buffer.from(token, 'base64').toString('utf8');
+      const decoded = atob(token);
       const parsed = JSON.parse(decoded);
       return {
         id: parsed.sub || parsed.id || 'user_' + crypto.randomUUID().slice(0, 8),
@@ -292,22 +99,261 @@ function parseUserFromToken(token) {
         avatar: parsed.avatar || '',
       };
     }
-  } catch (e) {
-    // fallback: 直接当用户名
-    const id = 'user_' + crypto.createHash('md5').update(token).digest('hex').slice(0, 8);
+  } catch (_) {
+    // fallback: 随机 ID + 截取 token 作为名字
+    const id = 'user_' + crypto.randomUUID().slice(0, 8);
     return { id, name: token.length > 16 ? token.slice(0, 16) : token, avatar: '' };
   }
 }
 
+async function getBody(req) {
+  try {
+    return await req.json();
+  } catch {
+    return {};
+  }
+}
+
+// ==================== 路由处理 ====================
+
+async function handleRequest(request) {
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const method = request.method;
+
+  // ---- CORS 预检 ----
+  if (method === 'OPTIONS') {
+    return new Response(null, { headers: CORS_HEADERS });
+  }
+
+  // ---- WebSocket 升级 (路径格式: /roomId/playerId) ----
+  const wsMatch = path.match(/^\/([^\/]+)\/([^\/]+)$/);
+  if (wsMatch && request.headers.get('upgrade')?.toLowerCase() === 'websocket') {
+    return handleWebSocket(request, wsMatch[1], wsMatch[2]);
+  }
+
+  // ---- HTTP API 路由 ----
+  try {
+    // GET /api/health
+    if (path === '/api/health' && method === 'GET') {
+      return jsonResponse({
+        status: 'ok',
+        rooms: roomManager.rooms.size,
+        version: '4.0.0',
+        uptime: (Date.now() - startTime) / 1000,
+      });
+    }
+
+    // GET /t/o (遥测 ping)
+    if (path === '/t/o' && method === 'GET') {
+      return jsonResponse({ ok: true });
+    }
+
+    // POST /errReport (错误上报)
+    if (path === '/errReport' && method === 'POST') {
+      const body = await getBody(request);
+      console.log(`[ERRREPORT] ver=${body.ver || ''} uid=${body.uid || ''} page=${body.page || ''} msg=${body.msg || ''}`);
+      return jsonResponse({ code: 0 });
+    }
+
+    // GET /api/multi/requestRoom/:roomId
+    const requestRoomMatch = path.match(/^\/api\/multi\/requestRoom\/(.+)$/);
+    if (requestRoomMatch && method === 'GET') {
+      const roomId = decodeURIComponent(requestRoomMatch[1]);
+      const version = url.searchParams.get('v') || '0.0.0';
+
+      if (!SUPPORTED_VERSIONS.includes(version)) {
+        return jsonResponse({ code: 1, msg: 'updatePTApp', server_addr: '' });
+      }
+
+      const room = roomManager.getRoom(roomId);
+      if (room) {
+        if (room.closed) {
+          return jsonResponse({ code: 1, msg: 'roomClosedMsg', server_addr: '' });
+        }
+        return jsonResponse({ code: 0, msg: 'roomAvailable', server_addr: EXTERNAL_HOST });
+      }
+
+      return jsonResponse({ code: -2, msg: 'canCreateRoom', server_addr: EXTERNAL_HOST });
+    }
+
+    // GET /api/multi/searchRoom
+    if (path === '/api/multi/searchRoom' && method === 'GET') {
+      const by = url.searchParams.get('by') || 'none';
+      const param1 = url.searchParams.get('param1') || '';
+      const param2 = url.searchParams.get('param2') || '';
+      return jsonResponse(roomManager.searchRooms(by, param1, param2));
+    }
+
+    // POST /api/multi/createRoom/:roomId
+    const createRoomMatch = path.match(/^\/api\/multi\/createRoom\/(.+)$/);
+    if (createRoomMatch && method === 'POST') {
+      const roomId = decodeURIComponent(createRoomMatch[1]);
+      const body = await getBody(request);
+      const { access_token, compete_mode, public: isPublic, description } = body;
+
+      const userInfo = parseUserFromToken(access_token);
+      if (!userInfo) {
+        return jsonResponse({ code: 1, msg: 'error' });
+      }
+
+      const result = roomManager.createRoom(
+        roomId, userInfo,
+        compete_mode || false,
+        description || '',
+        isPublic || false,
+      );
+
+      if (result.code !== 0) {
+        return jsonResponse({ code: result.code, msg: result.msg });
+      }
+
+      const room = result.room;
+      const wsConn = `${EXTERNAL_HOST}/${encodeURIComponent(roomId)}/${encodeURIComponent(userInfo.id)}`;
+
+      console.log(`[ROOM] Created "${roomId}" by ${userInfo.name} (${userInfo.id})`);
+
+      return jsonResponse({
+        code: 0,
+        selfRoom: room.getFullState(),
+        selfUser: { ...userInfo, isOwner: true },
+        wsConn,
+      });
+    }
+
+    // POST /api/multi/joinRoom/:roomId
+    const joinRoomMatch = path.match(/^\/api\/multi\/joinRoom\/(.+)$/);
+    if (joinRoomMatch && method === 'POST') {
+      const roomId = decodeURIComponent(joinRoomMatch[1]);
+      const body = await getBody(request);
+      const { access_token } = body;
+
+      const userInfo = parseUserFromToken(access_token);
+      if (!userInfo) {
+        return jsonResponse({ code: 1, msg: 'error' });
+      }
+
+      const result = roomManager.joinRoom(roomId, userInfo);
+      if (result.code !== 0) {
+        return jsonResponse({ code: result.code, msg: result.msg });
+      }
+
+      const room = result.room;
+      const wsConn = `${EXTERNAL_HOST}/${encodeURIComponent(roomId)}/${encodeURIComponent(userInfo.id)}`;
+
+      console.log(`[ROOM] ${userInfo.name} (${userInfo.id}) joined "${roomId}"`);
+
+      return jsonResponse({
+        code: 0,
+        selfRoom: room.getFullState(),
+        selfUser: { ...userInfo, isOwner: userInfo.id === room.owner },
+        wsConn,
+      });
+    }
+
+    // ---- 404 ----
+    return textResponse('Not Found', 404);
+  } catch (err) {
+    console.error('[HTTP] Error:', err.message);
+    return jsonResponse({ code: 1, msg: 'internalError' }, 500);
+  }
+}
+
+// ==================== WebSocket 处理 ====================
+
+function handleWebSocket(request, roomId, playerId) {
+  roomId = decodeURIComponent(roomId);
+  playerId = decodeURIComponent(playerId);
+
+  let socket;
+  let response;
+
+  try {
+    const upgrade = Deno.upgradeWebSocket(request);
+    socket = upgrade.socket;
+    response = upgrade.response;
+  } catch (e) {
+    console.log(`[WS] Upgrade failed for ${playerId} in ${roomId}: ${e.message}`);
+    return new Response('WebSocket upgrade failed', { status: 400 });
+  }
+
+  // 注册 WS 连接到房间
+  const registered = roomManager.registerWSConnectionByPath(socket, `/${roomId}/${playerId}`);
+
+  if (!registered) {
+    console.log(`[WS] Rejected connection from /${roomId}/${playerId} (room or player not found)`);
+    socket.send(JSON.stringify({ type: 'refused' }));
+    socket.close();
+    return response;
+  }
+
+  console.log(`[WS] ${playerId} connected to room ${roomId}`);
+
+  // 发送 alive 确认连接
+  socket.send(JSON.stringify({ type: 'alive' }));
+
+  // 心跳超时检测
+  let heartbeatTimer = null;
+  let heartbeatMissed = 0;
+
+  heartbeatTimer = setInterval(() => {
+    heartbeatMissed++;
+    if (heartbeatMissed > 3) {
+      clearInterval(heartbeatTimer);
+      console.log(`[WS] ${playerId} heartbeat timeout`);
+      try { socket.close(); } catch (_) { /* ignore */ }
+    }
+  }, 15000);
+
+  // ---- 标准 WebSocket 事件 ----
+
+  socket.addEventListener('message', (event) => {
+    try {
+      // event.data 是 string (JSON 文本)
+      const message = typeof event.data === 'string'
+        ? event.data
+        : new TextDecoder().decode(event.data);
+
+      // 重置心跳
+      const parsed = JSON.parse(message);
+      if (parsed.action === 'alive') {
+        heartbeatMissed = 0;
+      }
+      roomManager.handleWSMessage(socket, message);
+    } catch (e) {
+      console.error(`[WS] Message error from ${playerId}:`, e.message);
+    }
+  });
+
+  socket.addEventListener('close', () => {
+    roomManager.unregisterWSConnection(socket);
+    if (heartbeatTimer) clearInterval(heartbeatTimer);
+    console.log(`[WS] ${playerId} disconnected from room ${roomId}`);
+  });
+
+  socket.addEventListener('error', () => {
+    roomManager.unregisterWSConnection(socket);
+    if (heartbeatTimer) clearInterval(heartbeatTimer);
+  });
+
+  return response;
+}
+
 // ==================== 启动 ====================
 
-server.listen(PORT, HOST, () => {
+if (import.meta.main) {
   console.log(`┌──────────────────────────────────────────────────┐`);
-  console.log(`│  PhiTogether Multiplayer Server v4.0.0           │`);
+  console.log(`│  PhiTogether Multiplayer Server v4.0.0 (Deno)    │`);
   console.log(`├──────────────────────────────────────────────────┤`);
   console.log(`│  HTTP API:  http://${EXTERNAL_HOST}/api/multi         │`);
   console.log(`│  WebSocket: ws://${EXTERNAL_HOST}/{room}/{user}       │`);
   console.log(`│  Rooms:     ${roomManager.rooms.size} active              │`);
   console.log(`│  Cleanup:   every 60s, idle timeout 10min        │`);
+  console.log(`│  Runtime:   Deno ${Deno.version.deno}                       │`);
   console.log(`└──────────────────────────────────────────────────┘`);
-});
+
+  Deno.serve({ port: PORT, hostname: HOST }, handleRequest);
+}
+
+// 供 Deno Deploy 使用 (export default { fetch })
+export default { fetch: handleRequest };

@@ -1,0 +1,19 @@
+{
+  "name": "phitogether-server",
+  "version": "4.0.0",
+  "tasks": {
+    "start": "deno run -A server/index.js",
+    "dev": "deno run --watch -A server/index.js"
+  },
+  "compilerOptions": {
+    "allowJs": true
+  },
+  "lint": {
+    "include": ["server/"],
+    "exclude": ["server/node_modules/"]
+  },
+  "fmt": {
+    "include": ["server/"],
+    "exclude": ["server/node_modules/"]
+  }
+}

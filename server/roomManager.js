@@ -10,8 +10,6 @@
  *   { type: "eventType", extraInfo: ..., msg: "i18nKey\u200B..." }
  */
 
-import crypto from 'crypto';
-
 const MAX_PLAYERS = 20;
 const MAX_EVENTS = 200;
 
