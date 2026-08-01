@@ -203,7 +203,8 @@
         "loading": "Loading"
     },
     "introSequence": {
-        "welcome": "Welcome to PhiTogether"
+        "welcome": "Welcome to PhiTogether",
+        "subtitle": "Feel the rhythm."
     },
     "login": {
         "usernameAndPasswordCantBeEmpty": "Empty value detected",

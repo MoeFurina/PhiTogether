@@ -203,7 +203,8 @@
         "loading": "載入中"
     },
     "introSequence": {
-        "welcome": "Welcome To PhiTogether"
+        "welcome": "Welcome To PhiTogether",
+        "subtitle": "感受節拍。"
     },
     "login": {
         "usernameAndPasswordCantBeEmpty": "帳戶名和密碼不得為空！",
